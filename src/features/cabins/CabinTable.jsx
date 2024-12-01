@@ -51,7 +51,7 @@ function CabinTable() {
         <div>Action</div>
       </TableHeader>
       {cabins.map((cabin) => (
-        <CabinRow key={cabin.id} {...cabin} />
+        <CabinRow key={cabin.id} cabin={cabin} />
       ))}
       {error && <div>Error: {error.message}</div>}
     </Table>
