@@ -41,7 +41,7 @@ export async function addEditCabin(newData,id) {
 
   // Edit Cabin
   if(id){
-    query = query
+    query = query 
     .update({...newData, image: imagePath})
     .eq('id', id)
   }

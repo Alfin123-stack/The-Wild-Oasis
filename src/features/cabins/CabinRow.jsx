@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers.js";
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm.jsx";
 import useDeleteCabin from "./useDeleteCabin.js";
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import useCreateCabin from "./useCreateCabin.js";
+import Modal from "../../ui/Modal.jsx";
+import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
 
 const TableRow = styled.div`
   display: grid;
@@ -44,33 +47,63 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-function CabinRow({cabin}) {
-  const { id, name, maxCapacity, regularPrice, discount, image } = cabin
-  const [showForm, setShowForm] = useState(false);
-  
-  // custom hooks 
-  const {isPending, deleteCabin} = useDeleteCabin()
+function CabinRow({ cabin }) {
+  const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
 
+  // custom hooks
+  const { isPending, deleteCabin } = useDeleteCabin();
+  const { addCabin, isAdding } = useCreateCabin();
+
+  function handleDuplicateCabin() {
+    addCabin({
+      name: name + " (copy)",
+      maxCapacity,
+      regularPrice,
+      discount,
+      image,
+      // other fields can be added here
+    });
+  }
 
   return (
     <>
-    <TableRow>
-      <Img src={image} alt={name} />
-      <Cabin>{name}</Cabin>
-      <p>fits up to {maxCapacity} guests</p>
-      <Price>{formatCurrency(regularPrice)} USD</Price>
-      <Discount>{formatCurrency(discount)}</Discount>
-      <div>
-      <button disabled={isPending} onClick={() => deleteCabin(id)}>
-        Delete
-      </button>
-      <button disabled={isPending} onClick={() => setShowForm(prev => !prev)}>
-        Edit
-      </button>
-      </div>
-      {/* <Price>{regularPrice - (regularPrice * discount / 100)} USD</Price>  Calculating discounted price */}
-    </TableRow>
-    {showForm && <CreateCabinForm cabinToEdit={cabin}/>}
+      <TableRow>
+        <Img src={image} alt={name} />
+        <Cabin>{name}</Cabin>
+        <p>fits up to {maxCapacity} guests</p>
+        <Price>{formatCurrency(regularPrice)} USD</Price>
+        <Discount>{formatCurrency(discount)}</Discount>
+
+        <div>
+          <Modal>
+            <button disabled={isAdding} onClick={handleDuplicateCabin}>
+              <HiSquare2Stack />
+            </button>
+
+            {/* modal delete cabin */}
+            <Modal.Open opens="delete">
+              <button>
+                <HiTrash />
+              </button>
+            </Modal.Open>
+            <Modal.Window names="delete">
+              <ConfirmDelete resourceName="cabins" disabled={isPending} onConfirm={()=> deleteCabin(id)} />
+            </Modal.Window>
+
+            {/* modal edit cabin */}
+            <Modal.Open opens="edit">
+              <button
+                disabled={isPending}>
+                <HiPencil />
+              </button>
+            </Modal.Open>
+            <Modal.Window names="edit">
+              <CreateCabinForm cabinToEdit={cabin} />
+            </Modal.Window>
+          </Modal>
+        </div>
+        {/* <Price>{regularPrice - (regularPrice * discount / 100)} USD</Price>  Calculating discounted price */}
+      </TableRow>
     </>
   );
 }

@@ -1,4 +1,10 @@
+/* eslint-disable react/prop-types */
+
+import { cloneElement, createContext, useContext, useState } from "react";
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -48,3 +54,51 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+const ModalContext = createContext()
+
+function Modal({children}){
+  const [openName , setOpenName] = useState('')
+
+  const handleOpen = (name) => {
+    setOpenName(name)
+  }
+  const handleClose = () => setOpenName('')
+
+  return (
+    <ModalContext.Provider value={{ openName, handleOpen, handleClose }}>
+      {children}
+    </ModalContext.Provider>
+  )
+
+}
+
+function Window({ children, names: windowName }) {
+  const {handleClose, openName} = useContext(ModalContext)
+ // custom hook 
+ const ref= useOutsideClick(handleClose)
+
+  if(windowName !== openName) return
+
+  return  createPortal(
+    <Overlay>
+      <StyledModal ref={ref}>
+        <Button onClick={handleClose}>
+          <HiXMark />
+        </Button>
+        <div>{cloneElement(children, {onClose: handleClose})}</div>
+      </StyledModal>
+    </Overlay>, document.body
+  );
+}
+
+function Open({children, opens : openWindowName}){
+  const {handleOpen} = useContext(ModalContext)
+
+  return cloneElement(children, {onClick: ()=> handleOpen(openWindowName)})
+}
+
+Modal.Open = Open
+Modal.Window = Window
+
+export default Modal;

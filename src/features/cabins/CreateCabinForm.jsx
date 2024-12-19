@@ -10,7 +10,7 @@ import FormRow from "../../ui/FormRow";
 import useCreateCabin from "./useCreateCabin";
 import useEditCabin from "./useEditCabin";
 
-function CreateCabinForm({cabinToEdit= {}}) {
+function CreateCabinForm({cabinToEdit= {}, onClose}) {
   const {id: editId, ...editValues} = cabinToEdit;
   const isEditSession = editId ? true : false;
   const { register, handleSubmit, reset, getValues, formState } = useForm({
@@ -27,9 +27,15 @@ function CreateCabinForm({cabinToEdit= {}}) {
   function handleSubmitForm(data) {
     const image =  typeof data.image === 'string' ? data.image : data.image[0]
     if(isEditSession){
-      editCabin({newCabin : {...data, image}, id:editId});
+      editCabin({newCabin : {...data, image}, id:editId}, {onSuccess: ()=> {
+        reset()
+        onClose?.()
+      }});
     } else {
-      addCabin({...data, image}, {onSuccess: ()=> reset()});
+      addCabin({...data, image}, {onSuccess: ()=> {
+        reset()
+        onClose?.()
+      }});
     }
     // console.log({...data, image: data.image[0]})
   }
@@ -38,7 +44,7 @@ function CreateCabinForm({cabinToEdit= {}}) {
     console.log(errors);
   }
   return (
-    <Form onSubmit={handleSubmit(handleSubmitForm, handleFormError)}>
+    <Form onSubmit={handleSubmit(handleSubmitForm, handleFormError)} type={onClose ? 'modal' : 'reguler'}>
       <FormRow label="Name" errorMessage={errors?.name?.message}>
       <Input
       disabled={isAdding || isEditing}
@@ -111,10 +117,10 @@ function CreateCabinForm({cabinToEdit= {}}) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" type="reset" onClick={()=> onClose?.()}>
           Cancel
         </Button>
-        <Button disabled={isAdding || isEditing                                                                                     }>{isEditSession ? "Edit Cabin" : "Add cabin"}</Button>
+        <Button disabled={isAdding || isEditing                                                                        }>{isEditSession ? "Edit Cabin" : "Add cabin"}</Button>
       </FormRow>
     </Form>
   );
