@@ -7,18 +7,20 @@ import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import useCreateCabin from "./useCreateCabin.js";
 import Modal from "../../ui/Modal.jsx";
 import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
+import Table from "../../ui/Table.jsx";
+import Menus from "../../ui/Menus.jsx";
 
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-  column-gap: 2.4rem;
-  align-items: center;
-  padding: 1.4rem 2.4rem;
+// const TableRow = styled.div`
+//   display: grid;
+//   grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
+//   column-gap: 2.4rem;
+//   align-items: center;
+//   padding: 1.4rem 2.4rem;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-`;
+//   &:not(:last-child) {
+//     border-bottom: 1px solid var(--color-grey-100);
+//   }
+// `;
 
 const Img = styled.img`
   display: block;
@@ -67,43 +69,67 @@ function CabinRow({ cabin }) {
 
   return (
     <>
-      <TableRow>
+      <Table.Row>
         <Img src={image} alt={name} />
         <Cabin>{name}</Cabin>
         <p>fits up to {maxCapacity} guests</p>
         <Price>{formatCurrency(regularPrice)} USD</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        <Discount>{discount === 0 ? "➖" : formatCurrency(discount)}</Discount>
 
         <div>
           <Modal>
-            <button disabled={isAdding} onClick={handleDuplicateCabin}>
-              <HiSquare2Stack />
-            </button>
+            <Menus.Menu>
+              {/* toogle menu */}
+              <Menus.Toggle id={id} />
+              <Menus.List id={id}>
+                {/* modal create cabin */}
+                {/* handling duplicated cabin */}
+                <Menus.Button
+                  disabled={isAdding}
+                  onClick={handleDuplicateCabin}>
+                  <span>
+                    <HiSquare2Stack />
+                  </span>
+                  Duplicate
+                </Menus.Button>
 
-            {/* modal delete cabin */}
-            <Modal.Open opens="delete">
-              <button>
-                <HiTrash />
-              </button>
-            </Modal.Open>
-            <Modal.Window names="delete">
-              <ConfirmDelete resourceName="cabins" disabled={isPending} onConfirm={()=> deleteCabin(id)} />
-            </Modal.Window>
+                {/* modal delete cabin */}
+                <Modal.Open opens="delete">
+                  <Menus.Button disabled={isPending}>
+                    <span>
+                      <HiTrash />
+                    </span>
+                    Delete
+                  </Menus.Button>
+                </Modal.Open>
 
-            {/* modal edit cabin */}
-            <Modal.Open opens="edit">
-              <button
-                disabled={isPending}>
-                <HiPencil />
-              </button>
-            </Modal.Open>
-            <Modal.Window names="edit">
-              <CreateCabinForm cabinToEdit={cabin} />
-            </Modal.Window>
+                {/* modal edit cabin */}
+                <Modal.Open opens="edit">
+                  <Menus.Button disabled={isPending}>
+                    <span>
+                      <HiPencil />
+                    </span>
+                    Edit
+                  </Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+
+              <Modal.Window names="delete">
+                <ConfirmDelete
+                  resourceName="cabins"
+                  disabled={isPending}
+                  onConfirm={() => deleteCabin(id)}
+                />
+              </Modal.Window>
+
+              <Modal.Window names="edit">
+                <CreateCabinForm cabinToEdit={cabin} />
+              </Modal.Window>
+            </Menus.Menu>
           </Modal>
         </div>
         {/* <Price>{regularPrice - (regularPrice * discount / 100)} USD</Price>  Calculating discounted price */}
-      </TableRow>
+      </Table.Row>
     </>
   );
 }

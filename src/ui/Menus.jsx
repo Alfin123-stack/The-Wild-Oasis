@@ -1,6 +1,11 @@
+/* eslint-disable react/prop-types */
+import { createContext, useContext, useState } from "react";
+import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
+import { useOutsideClick } from "../hooks/useOutsideClick";
+import { createPortal } from "react-dom";
 
-const StyledMenu = styled.div`
+const Menu = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -60,3 +65,65 @@ const StyledButton = styled.button`
     transition: all 0.3s;
   }
 `;
+
+const MenusContext = createContext();
+
+function Menus({ children }) {
+  const [isOpenId, setIsOpenId] = useState("");
+  const [position, setPosition] = useState(null);
+
+  const handleToggle = (id, e) => {
+    const rect = e.target.closest("button").getBoundingClientRect();
+    setPosition({
+      x: window.innerWidth - rect.width - rect.x,
+      y: rect.y + rect.height + 8,
+    });
+    setIsOpenId(isOpenId === id ? '' : id);
+  };
+
+  const close = () => setIsOpenId("");
+
+  return (
+    <MenusContext.Provider value={{ isOpenId, handleToggle, position, close }}>
+      {children}
+    </MenusContext.Provider>
+  );
+}
+
+function Toggle({ id }) {
+  const { handleToggle } = useContext(MenusContext);
+
+  return (
+    <StyledToggle onClick={(e) => handleToggle(id, e)}>
+      <HiEllipsisVertical />
+    </StyledToggle>
+  );
+}
+
+function List({ children, id }) {
+  const { isOpenId, position, close } = useContext(MenusContext);
+  const ref = useOutsideClick(close);
+
+  if (isOpenId !== id) return null;
+
+  return createPortal(
+    <StyledList ref={ref} position={position}>
+      {children}
+    </StyledList>,
+    document.body
+  );
+}
+
+function Button({ children, disabled, onClick }) {
+  return (
+    <li>
+      <StyledButton disabled={disabled} onClick={onClick}>{children}</StyledButton>
+    </li>
+  );
+}
+Menus.Menu = Menu;
+Menus.Toggle = Toggle;
+Menus.List = List;
+Menus.Button = Button;
+
+export default Menus;

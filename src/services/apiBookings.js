@@ -1,6 +1,36 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
+export async function getBookings({ filter, sort }) {
+  let query = supabase
+    .from("bookings")
+    .select("*, status, cabins(name), guests(fullName, email)");
+
+  // Filtering
+  // 1) filter if an array
+  if (filter && filter.length > 0) {
+    filter.forEach((element) => {
+      query = query[element.method || "eq"](element.field, element.value);
+    });
+    // 2)filter if not an array
+  } else if (filter) {
+    query = query[filter.method || "eq"](filter.field, filter.value);
+  }
+
+  // SORTING
+  if (sort) {
+    query = query.order(sort.field, { ascending: sort.direction === "asc" });
+  }
+
+  const { data: bookings, error } = await query;
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not be loaded");
+  }
+  return bookings;
+}
+
 export async function getBooking(id) {
   const { data, error } = await supabase
     .from("bookings")
