@@ -13,6 +13,7 @@ const StyledTable = styled.div`
 
 const CommonRow = styled.div`
   display: grid;
+  text-align: center;
   grid-template-columns: ${(props) => props.columns};
   column-gap: 2.4rem;
   align-items: center;
@@ -22,6 +23,7 @@ const CommonRow = styled.div`
 const StyledHeader = styled(CommonRow)`
   padding: 1.6rem 2.4rem;
 
+  text-align: center;
   background-color: var(--color-grey-50);
   border-bottom: 1px solid var(--color-grey-100);
   text-transform: uppercase;
@@ -61,48 +63,35 @@ const Empty = styled.p`
   margin: 2.4rem;
 `;
 
-const TableContext = createContext()
+const TableContext = createContext();
 
-function Table({columns, children}){
-  return(
-    <TableContext.Provider value={{columns: columns}}>
-      <StyledTable>
-        {children}
-      </StyledTable>
+function Table({ columns, children }) {
+  return (
+    <TableContext.Provider value={{ columns: columns }}>
+      <StyledTable>{children}</StyledTable>
     </TableContext.Provider>
-  )
+  );
 }
 
-function Header({children}){
-  const { columns } = useContext(TableContext)
-  return (
-    <StyledHeader columns={columns}>{children}</StyledHeader>
-  )
+function Header({ children }) {
+  const { columns } = useContext(TableContext);
+  return <StyledHeader columns={columns}>{children}</StyledHeader>;
 }
 
-function Row({children}){
-  const { columns } = useContext(TableContext)
-  return (
-    <StyledRow columns={columns}>{children}</StyledRow>
-  )
+function Row({ children }) {
+  const { columns } = useContext(TableContext);
+  return <StyledRow columns={columns}>{children}</StyledRow>;
 }
 
-function Body({data, render}){
+function Body({ data, render }) {
+  if (!data.length) return <Empty>No data at the moment!</Empty>;
 
-  if(!data.length) return <Empty>No data at the moment!</Empty>
-
-  return (
-    <StyledBody>
-      {data.map(render)}
-    </StyledBody>
-  )
+  return <StyledBody>{data.map(render)}</StyledBody>;
 }
 
-Table.Header = Header
-Table.Row = Row
-Table.Body = Body
-Table.Footer = Footer
-
-
+Table.Header = Header;
+Table.Row = Row;
+Table.Body = Body;
+Table.Footer = Footer;
 
 export default Table;

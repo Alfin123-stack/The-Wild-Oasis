@@ -76,7 +76,7 @@ function CabinRow({ cabin }) {
         <Price>{formatCurrency(regularPrice)} USD</Price>
         <Discount>{discount === 0 ? "➖" : formatCurrency(discount)}</Discount>
 
-        <div>
+        <Menus>
           <Modal>
             <Menus.Menu>
               {/* toogle menu */}
@@ -127,7 +127,7 @@ function CabinRow({ cabin }) {
               </Modal.Window>
             </Menus.Menu>
           </Modal>
-        </div>
+        </Menus>
         {/* <Price>{regularPrice - (regularPrice * discount / 100)} USD</Price>  Calculating discounted price */}
       </Table.Row>
     </>

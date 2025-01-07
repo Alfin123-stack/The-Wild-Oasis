@@ -5,6 +5,7 @@ import useCabins from "./useCabins";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import Pagination from "../../ui/Pagination";
 
 // const Table = styled.div`
 //   border: 1px solid var(--color-grey-200);
@@ -35,7 +36,6 @@ function CabinTable() {
 
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get("discount") || "all";
-  console.log(filterValue);
 
   let filteredCabins;
 
@@ -52,30 +52,29 @@ function CabinTable() {
   const sortedCabins = filteredCabins?.sort(
     (a, b) => (a[field] - b[field]) * modifier
   );
-  console.log(sortedCabins);
 
   if (isLoading) return <Spinner />;
 
   return (
-    <Menus>
-      <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
-        <Table.Header>
-          <div>Image</div>
-          <div>Cabin</div>
-          <div>Capacity</div>
-          <div>Price</div>
-          <div>Discount</div>
-          <div>Action</div>
-        </Table.Header>
-        <Table.Body
-          // data={cabins}
-          // data={filteredCabins}
-          data={sortedCabins}
-          render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
-        />
-        {error && <div>Error: {error.message}</div>}
-      </Table>
-    </Menus>
+    <Table columns="0.6fr 1fr 2.2fr 1fr 1fr 0.2fr">
+      <Table.Header>
+        <div>Image</div>
+        <div>Cabin</div>
+        <div>Capacity</div>
+        <div>Price</div>
+        <div>Discount</div>
+      </Table.Header>
+      <Table.Body
+        // data={cabins}
+        // data={filteredCabins}
+        data={sortedCabins}
+        render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
+      />
+      {error && <div>Error: {error.message}</div>}
+      <Table.Footer>
+        <Pagination />
+      </Table.Footer>
+    </Table>
   );
 }
 

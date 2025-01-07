@@ -43,6 +43,9 @@ function Filter({ filterField, options }) {
 
   function handleClick(value) {
     search.set(filterField, value);
+    if(search.get('page')){
+      search.set('page', 1)
+    }
     setSearch(search);
   }
   return (
