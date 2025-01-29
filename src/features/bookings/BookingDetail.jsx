@@ -8,6 +8,7 @@ import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 
+import Empty from "../../ui/Empty";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import useBooking from "./useBooking";
 import Spinner from "../../ui/Spinner";
@@ -39,6 +40,8 @@ function BookingDetail() {
     "checked-out": "silver",
   };
 
+  if (!booking) return <Empty resource="booking" />;
+
   if (isLoading || isCheckout) return <Spinner />;
 
   const { status, id } = booking;
@@ -65,7 +68,7 @@ function BookingDetail() {
 
         <Modal>
           <Modal.Open opens="delete">
-            <Button variation='danger'>
+            <Button variation="danger">
               <HiTrash /> Delete
             </Button>
           </Modal.Open>

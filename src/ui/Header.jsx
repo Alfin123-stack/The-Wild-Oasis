@@ -8,7 +8,7 @@ const StyledHeader = styled.header`
   align-items: center;
   gap: 4rem;
   background-color: var(--color-grey-0);
-  border-bottom: 1px solid var(--color-grey-500);
+  /* border-bottom: 1px solid var(--color-grey-500); */
   padding: 4rem;
 `;
 

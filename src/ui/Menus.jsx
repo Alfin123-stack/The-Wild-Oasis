@@ -73,6 +73,7 @@ function Menus({ children }) {
   const [position, setPosition] = useState(null);
 
   const handleToggle = (id, e) => {
+    e.stopPropagation();
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
