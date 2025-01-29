@@ -3,7 +3,6 @@ import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow";
 import useCabins from "./useCabins";
 import Table from "../../ui/Table";
-import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../../ui/Pagination";
 
@@ -32,7 +31,8 @@ import Pagination from "../../ui/Pagination";
 // `;
 
 function CabinTable() {
-  const { isLoading, error, cabins } = useCabins();
+  const { isLoading, error, cabins, count } = useCabins();
+
 
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get("discount") || "all";
@@ -72,7 +72,7 @@ function CabinTable() {
       />
       {error && <div>Error: {error.message}</div>}
       <Table.Footer>
-        <Pagination />
+        <Pagination count={count} />
       </Table.Footer>
     </Table>
   );

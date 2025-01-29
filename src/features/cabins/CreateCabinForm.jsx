@@ -45,7 +45,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
   }
   return (
     <Form onSubmit={handleSubmit(handleSubmitForm, handleFormError)} type={onClose ? 'modal' : 'reguler'}>
-      <FormRow label="Name" errorMessage={errors?.name?.message}>
+      <FormRow label="Name" error={errors?.name?.message}>
       <Input
       disabled={isAdding || isEditing}
           type="text"
@@ -56,7 +56,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
         />
       </FormRow>
 
-      <FormRow label="Max Capacity" errorMessage={errors?.maxCapacity?.message}>
+      <FormRow label="Max Capacity" error={errors?.maxCapacity?.message}>
         <Input
         disabled={isAdding || isEditing}
           type="number"
@@ -71,7 +71,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
         />
       </FormRow>
 
-      <FormRow label="Regular Price" errorMessage={errors?.regularPrice?.message}>
+      <FormRow label="Regular Price" error={errors?.regularPrice?.message}>
         <Input
         disabled={isAdding || isEditing}
           type="number"
@@ -82,7 +82,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
         />
       </FormRow>
 
-      <FormRow label="Discount" errorMessage={errors?.discount?.message}>
+      <FormRow label="Discount" error={errors?.discount?.message}>
         <Input
         disabled={isAdding || isEditing}
           type="number"
@@ -97,7 +97,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
         />
       </FormRow>
 
-      <FormRow label="Description" errorMessage={errors?.description?.message}>
+      <FormRow label="Description" error={errors?.description?.message}>
         <Textarea
         disabled={isAdding || isEditing}
           type="text"
@@ -109,7 +109,7 @@ function CreateCabinForm({cabinToEdit= {}, onClose}) {
         />
       </FormRow>
 
-      <FormRow label="Image" errorMessage={errors?.image?.message}>
+      <FormRow label="Image" error={errors?.image?.message}>
         <FileInput disabled={isAdding || isEditing} id="image" type="file" accept="image/*" {...register("image", {
             required: isEditSession ? false : "Please insert a file image",
           })} />
